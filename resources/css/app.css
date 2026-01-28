@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+    
+    --color-color-500: #a99467;
+    --color-color-900: #d4b874;
+    --color-color-100: #e8e1d7;
+
+    --color-primary-100: #fde1bc;
+    --teranga-primary-500: #e5b688;
+    --teranga-primary-700: #985e38;
+    --teranga-primary-900: #6e442b;
+
+    --teranga-dark: #2e3128;
+    --teranga-orange: #c15f3c;
+    --teranga-choco: #622b21;
+    --teranga-green: #677462;
+
+
+
+    --teranga-cream: #F5F5DC; 
+    --teranga-dark: #1A1A1A,   
+    --teranga-gold: #D4AF37; 
+    --teranga-medium-gray: #6B7280; 
+    --teranga-light-gray: #E5E7EB; 
+    --teranga-light-gray-translucent: rgba(229, 231, 235, 0.5); 
+}
+
+/* Full calendar */
+
+@media screen and (max-width: 600px) {
+    .fc-direction-ltr .fc-toolbar :not(:first-child) {
+        margin-left: 0em;
+    }
+    /*
+     .fc-button-group{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+        */
+    .fc .fc-toolbar-title {
+        font-size: 0.8rem;
+        text-align: center;
+    }
+}

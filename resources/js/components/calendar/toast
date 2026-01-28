@@ -1,0 +1,18 @@
+ toast.success(
+                `Vous avez sélectionné : ${clickedDateTime.toLocaleDateString(
+                    "fr-FR"
+                )} à ${clickedDateTime.toLocaleTimeString("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                })}`,
+                {
+                    position: "bottom-left", // Position plus discrète
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                }
+            );
