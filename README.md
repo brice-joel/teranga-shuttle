@@ -1,66 +1,224 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Teranga Shuttle
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
 
-## About Laravel
+**Teranga Shuttle** is a modern **vehicle rental and VTC (ride-hailing) web application** built for the city of **Dakar, Senegal**. The platform allows users to rent vehicles or book VTC rides online, pay securely, and manage their bookings through a clean and intuitive interface.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This version of Teranga Shuttle is built using a **full-stack Laravel + Inertia.js + React architecture**, providing a smooth SPA-like user experience while maintaining the reliability and structure of a server-side framework.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Core Features
 
-## Learning Laravel
+### User Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- User registration & authentication
+- User profile management
+- Vehicle rental booking
+- VTC ride booking
+- Pickup & drop-off location selection
+- Booking history & booking status tracking
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Vehicle & Fleet Management
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Vehicle listing with detailed information
+- Vehicle categories (economy, standard, luxury, SUV, etc.)
+- Real-time availability management
 
-## Laravel Sponsors
+### Payments
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Secure online payments via **Stripe API**
+- Payment confirmation & receipts
+- Transaction history
 
-### Premium Partners
+### VTC Services
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Professional driver booking
+- Scheduled and on-demand rides
+- Ride confirmation & tracking
 
-## Contributing
+### Admin & Management
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Admin dashboard
+- Vehicle & driver management
+- Booking & ride management
+- User management
+- Payment monitoring
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Tech Stack
 
-## Security Vulnerabilities
+### Backend
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Laravel** (PHP)
+- MVC & service-based architecture
+
+### Frontend
+
+- **Inertia.js**
+- **React.js**
+- **Tailwind CSS**
+
+### Payments
+
+- **Stripe API**
+
+### Database
+
+- **MySQL** (or any Laravel-supported database)
+
+### Tooling
+
+- Vite
+- Axios
+- Composer
+- npm / Yarn
+
+---
+
+## Screenshots
+
+> Screenshots and UI previews will be added here.
+
+```
+📸 Homepage
+📸 Vehicle listing
+📸 Booking flow
+📸 Stripe checkout
+📸 User dashboard
+📸 Admin panel
+```
+
+---
+
+## Installation Guide
+
+### Requirements
+
+- PHP >= 8.1
+- Composer
+- Node.js & npm (or Yarn)
+- MySQL (or compatible DB)
+
+---
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/teranga-shuttle.git
+cd teranga-shuttle
+```
+
+---
+
+### 2. Install backend dependencies
+
+```bash
+composer install
+```
+
+---
+
+### 3. Install frontend dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+---
+
+### 4. Environment configuration
+
+Copy the environment file:
+
+```bash
+cp .env.example .env
+```
+
+Configure the following in `.env`:
+
+- Database credentials
+- Stripe API keys
+
+Generate the application key:
+
+```bash
+php artisan key:generate
+```
+
+---
+
+### 5. Run migrations
+
+```bash
+php artisan migrate
+```
+
+---
+
+### 6. Seed the database (optional)
+
+```bash
+php artisan db:seed
+```
+
+---
+
+### 7. Start the development servers
+
+Backend (Laravel):
+
+```bash
+php artisan serve
+```
+
+Frontend (Vite / React):
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+---
+
+## Architecture Highlights
+
+- SPA-like navigation using Inertia.js
+- Clean separation between backend and frontend
+- Reusable React components
+- Secure payment flow
+
+This project demonstrates **modern full-stack development** for transportation and mobility platforms.
+
+---
+
+## Future Enhancements
+
+- Google Maps integration
+- Real-time driver tracking
+- Multi-city support
+- Mobile application
+
+---
+
+## Contribution
+
+Contributions are welcome!
+
+- Fork the repository
+- Create a feature branch
+- Submit a pull request
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is intended for portfolio and demonstration purposes.
+
+---
+
+© 2026 – Teranga Shuttle
