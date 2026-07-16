@@ -174,16 +174,19 @@ export default function EventDetails({
                         {/* 3. Logistique & Notes */}
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col justify-between space-y-2">
                                     <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5 mb-2">
                                         <Users className="w-3.5 h-3.5 text-amber-500" />{" "}
                                         Passagers
                                     </label>
-                                    <StepperInput
-                                        value={data.adults_count}
-                                        onChange={(v) => setData("adults_count", v)}
-                                        min={1}
-                                        max={7}
-                                    />
+                                    <div className="flex-1 flex items-center mt-1">
+                                        <StepperInput
+                                            value={data.adults_count}
+                                            onChange={(v) => setData("adults_count", v)}
+                                            min={1}
+                                            max={7}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm space-y-3">
                                     <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
