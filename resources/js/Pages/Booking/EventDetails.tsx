@@ -17,6 +17,7 @@ import {
 import dayjs from "dayjs";
 import { formatDate } from "@/Utils/formatters";
 import CalendarModal from "@/Components/ui/modals/CalendarModal";
+import StepperInput from "@/Components/ui/forms/StepperInput";
 import { Booking } from "@/types";
 
 interface Props {
@@ -34,12 +35,14 @@ export default function EventDetails({
 }: Props) {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
-    const { data, setData, post, processing } = useForm({
+    const { data, setData, post, processing, transform } = useForm({
         type: "event_hourly",
         pickup_address: bookingData.pickup_address || "",
         start_time: bookingData.start_time || "",
         duration_hours: bookingData.duration_hours || 2,
         adults_count: bookingData.adults_count || 1,
+        large_luggage_count: 0,
+        small_luggage_count: 0,
         luggage_count: bookingData.luggage_count || 0,
         notes: "",
     });
@@ -58,6 +61,11 @@ export default function EventDetails({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        transform((data) => ({
+            ...data,
+            luggage_count: data.large_luggage_count + data.small_luggage_count,
+            notes: data.notes + `\n\n[Bagages : ${data.large_luggage_count} grandes (23kg), ${data.small_luggage_count} petites]`,
+        }));
         post(route("bookings.store"));
     };
 
@@ -166,42 +174,42 @@ export default function EventDetails({
                         {/* 3. Logistique & Notes */}
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm space-y-2">
-                                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+                                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5 mb-2">
                                         <Users className="w-3.5 h-3.5 text-amber-500" />{" "}
                                         Passagers
                                     </label>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        max="8"
+                                    <StepperInput
                                         value={data.adults_count}
-                                        onChange={(e) =>
-                                            setData(
-                                                "adults_count",
-                                                parseInt(e.target.value) || 1,
-                                            )
-                                        }
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 font-bold text-xs text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 focus:bg-white"
+                                        onChange={(v) => setData("adults_count", v)}
+                                        min={1}
+                                        max={7}
                                     />
                                 </div>
-                                <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm space-y-2">
+                                <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm space-y-3">
                                     <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
                                         <Briefcase className="w-3.5 h-3.5 text-amber-500" />{" "}
                                         Bagages
                                     </label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        value={data.luggage_count}
-                                        onChange={(e) =>
-                                            setData(
-                                                "luggage_count",
-                                                parseInt(e.target.value) || 0,
-                                            )
-                                        }
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 font-bold text-xs text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 focus:bg-white"
-                                    />
+                                    <div className="flex flex-col gap-3">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs text-slate-600 font-medium">Grand (23kg max)</span>
+                                            <StepperInput
+                                                value={data.large_luggage_count}
+                                                onChange={(v) => setData("large_luggage_count", v)}
+                                                min={0}
+                                                max={5}
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs text-slate-600 font-medium">Petit</span>
+                                            <StepperInput
+                                                value={data.small_luggage_count}
+                                                onChange={(v) => setData("small_luggage_count", v)}
+                                                min={0}
+                                                max={4}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -282,9 +290,16 @@ export default function EventDetails({
                                         <span className="text-slate-400 text-[11px]">
                                             Bagage(s)
                                         </span>
-                                        <span className="font-bold text-slate-100">
-                                            {data.luggage_count}
-                                        </span>
+                                        <div className="flex flex-col items-end">
+                                            <span className="font-bold text-slate-100">
+                                                {data.large_luggage_count + data.small_luggage_count}
+                                            </span>
+                                            {(data.large_luggage_count > 0 || data.small_luggage_count > 0) && (
+                                                <span className="text-[9px] text-slate-400 mt-0.5 text-right">
+                                                    {data.large_luggage_count} grand(s), {data.small_luggage_count} petit(s)
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

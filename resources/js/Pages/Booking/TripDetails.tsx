@@ -23,6 +23,7 @@ import {
     formatDuration,
     formatPrice,
 } from "@/Utils/formatters";
+import StepperInput from "@/Components/ui/forms/StepperInput";
 
 interface Props {
     trip: Trip;
@@ -53,7 +54,7 @@ export default function TripDetails({
         ),
     );
 
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         trip_id: currentTrip.id,
         type: bookingData.type,
         start_time: bookingData.start_time || "",
@@ -61,6 +62,8 @@ export default function TripDetails({
         adults_count: bookingData.adults_count || 1,
         pickup_address: currentTrip.departure_city,
         dropoff_address: currentTrip.arrival_city,
+        large_luggage_count: 0,
+        small_luggage_count: 0,
         luggage_count: bookingData.luggage_count || 0,
         notes: "",
         total_amount: currentTrip.fixed_price || 0,
@@ -93,6 +96,11 @@ export default function TripDetails({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        transform((data) => ({
+            ...data,
+            luggage_count: data.large_luggage_count + data.small_luggage_count,
+            notes: data.notes + `\n\n[Bagages : ${data.large_luggage_count} grandes (23kg), ${data.small_luggage_count} petites]`,
+        }));
         post(route("booking.store"));
     };
 
@@ -235,51 +243,49 @@ export default function TripDetails({
                                     Capacité requise
                                 </label>
                                 <div className="flex gap-2">
-                                    <div className="flex-1 bg-slate-50 border border-slate-100 rounded-xl p-2.5 flex items-center gap-2">
-                                        <Users className="w-4 h-4 text-slate-600 shrink-0" />
-                                        <div className="flex-1 min-w-0">
-                                            <span className="block text-[9px] font-bold uppercase text-slate-600 leading-none mb-0.5">
+                                    <div className="flex-1 bg-slate-50 border border-slate-100 rounded-xl p-2.5 flex flex-col gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <Users className="w-4 h-4 text-slate-600 shrink-0" />
+                                            <span className="block text-[9px] font-bold uppercase text-slate-600 leading-none">
                                                 Passagers
                                             </span>
-                                            <input
-                                                type="number"
-                                                min="1"
-                                                max="8"
+                                        </div>
+                                        <div className="flex justify-center mt-1">
+                                            <StepperInput
                                                 value={data.adults_count}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "adults_count",
-                                                        parseInt(
-                                                            e.target.value,
-                                                        ) || 1,
-                                                    )
-                                                }
-                                                className="bg-transparent border-none p-0 w-full font-bold text-slate-900 text-xs focus:ring-0 focus:outline-none"
+                                                onChange={(v) => setData("adults_count", v)}
+                                                min={1}
+                                                max={7}
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="flex-1 bg-slate-50 border border-slate-100 rounded-xl p-2.5 flex items-center gap-2">
-                                        <Briefcase className="w-4 h-4 text-slate-600 shrink-0" />
-                                        <div className="flex-1 min-w-0">
-                                            <span className="block text-[9px] font-bold uppercase text-slate-600 leading-none mb-0.5">
+                                    <div className="flex-1 bg-slate-50 border border-slate-100 rounded-xl p-3 flex flex-col gap-3">
+                                        <div className="flex items-center gap-2">
+                                            <Briefcase className="w-4 h-4 text-slate-600 shrink-0" />
+                                            <span className="block text-[9px] font-bold uppercase text-slate-600 leading-none">
                                                 Bagages
                                             </span>
-                                            <input
-                                                type="number"
-                                                min="0"
-                                                max="10"
-                                                value={data.luggage_count}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "luggage_count",
-                                                        parseInt(
-                                                            e.target.value,
-                                                        ) || 0,
-                                                    )
-                                                }
-                                                className="bg-transparent border-none p-0 w-full font-bold text-slate-900 text-xs focus:ring-0 focus:outline-none"
-                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-[10px] text-slate-600 font-medium">Grand (23kg)</span>
+                                                <StepperInput
+                                                    value={data.large_luggage_count}
+                                                    onChange={(v) => setData("large_luggage_count", v)}
+                                                    min={0}
+                                                    max={5}
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-[10px] text-slate-600 font-medium">Petit</span>
+                                                <StepperInput
+                                                    value={data.small_luggage_count}
+                                                    onChange={(v) => setData("small_luggage_count", v)}
+                                                    min={0}
+                                                    max={4}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -378,9 +384,16 @@ export default function TripDetails({
                                         <span className="text-slate-400 text-[11px]">
                                             Bagage(s)
                                         </span>
-                                        <span className="font-bold text-slate-100">
-                                            {data.luggage_count}
-                                        </span>
+                                        <div className="flex flex-col items-end">
+                                            <span className="font-bold text-slate-100">
+                                                {data.large_luggage_count + data.small_luggage_count}
+                                            </span>
+                                            {(data.large_luggage_count > 0 || data.small_luggage_count > 0) && (
+                                                <span className="text-[9px] text-slate-400 mt-0.5 text-right">
+                                                    {data.large_luggage_count} grand(s), {data.small_luggage_count} petit(s)
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

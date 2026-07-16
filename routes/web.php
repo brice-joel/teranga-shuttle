@@ -43,10 +43,10 @@ Route::prefix('/reservation')->middleware(['user'])->controller(BookingControlle
     // Redirections depuis le BookingEngine
     Route::get('/details-trajet', 'showTripDetails')->name('booking.trip.details');
     Route::get('/details-evenement',  'showEventDetails')->name('booking.event.details');
-    Route::post('/store', 'store')->middleware('auth')->name('booking.store');
-    Route::get('/confirmation/{booking}', 'showConfirmation')->middleware('auth')->name('booking.confirmation');
-    Route::get('/mes-reservations',  'index')->middleware('auth')->name('booking.index');
-    Route::patch('/update/{id}', 'update')->middleware('auth')->name('booking.update');
+    Route::post('/store', 'store')->middleware(['auth', 'verified'])->name('booking.store');
+    Route::get('/confirmation/{booking}', 'showConfirmation')->middleware(['auth', 'verified'])->name('booking.confirmation');
+    Route::get('/mes-reservations',  'index')->middleware(['auth', 'verified'])->name('booking.index');
+    Route::patch('/update/{id}', 'update')->middleware(['auth', 'verified'])->name('booking.update');
 });
 
 // Espace Client (Protégé)

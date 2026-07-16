@@ -13,6 +13,7 @@ import {
     FileText,
     LayoutGrid,
 } from "lucide-react";
+import StepperInput from "@/Components/ui/forms/StepperInput";
 
 interface DevisFormProps {
     queryParams: Record<string, string>;
@@ -23,7 +24,7 @@ export default function DevisForm({ queryParams }: DevisFormProps) {
     console.log("auth", auth);
 
     // Initialisation du formulaire avec priorités : URL params -> Auth User -> Valeurs par défaut
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, transform } = useForm({
         user_name: queryParams.user_name || auth.user?.name || "",
         user_email: queryParams.user_email || auth.user?.email || "",
         pickup_address:
@@ -37,9 +38,11 @@ export default function DevisForm({ queryParams }: DevisFormProps) {
         adults_count: queryParams.adults_count
             ? parseInt(queryParams.adults_count)
             : 1,
+        large_luggage_count: 0,
+        small_luggage_count: 0,
         luggage_count: queryParams.luggage_count
             ? parseInt(queryParams.luggage_count)
-            : 1, // 1 par défaut selon ton souhait
+            : 0,
         notes: queryParams.notes || "",
     });
 
@@ -52,6 +55,11 @@ export default function DevisForm({ queryParams }: DevisFormProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        transform((data) => ({
+            ...data,
+            luggage_count: data.large_luggage_count + data.small_luggage_count,
+            notes: data.notes + `\n\n[Bagages : ${data.large_luggage_count} grandes (23kg), ${data.small_luggage_count} petites]`,
+        }));
         post(route("devis.store"));
     };
 
@@ -219,24 +227,15 @@ export default function DevisForm({ queryParams }: DevisFormProps) {
 
                 <div>
                     <InputLabel
-                        htmlFor="adults_count"
                         value="Nombre de personnes"
-                        className="font-semibold text-slate-700"
+                        className="font-semibold text-slate-700 mb-2"
                     />
-                    <div className="relative mt-1">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                        <TextInput
-                            id="adults_count"
-                            type="number"
-                            min="1"
+                    <div className="flex items-center">
+                        <StepperInput
                             value={data.adults_count}
-                            onChange={(e) =>
-                                setData(
-                                    "adults_count",
-                                    parseInt(e.target.value) || 1,
-                                )
-                            }
-                            className="pl-11 block w-full border-slate-200"
+                            onChange={(v) => setData("adults_count", v)}
+                            min={1}
+                            max={7}
                         />
                     </div>
                     <InputError
@@ -247,25 +246,28 @@ export default function DevisForm({ queryParams }: DevisFormProps) {
 
                 <div>
                     <InputLabel
-                        htmlFor="luggage_count"
-                        value="Nombre de bagages"
-                        className="font-semibold text-slate-700"
+                        value="Bagages"
+                        className="font-semibold text-slate-700 mb-2"
                     />
-                    <div className="relative mt-1">
-                        <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                        <TextInput
-                            id="luggage_count"
-                            type="number"
-                            min="0"
-                            value={data.luggage_count}
-                            onChange={(e) =>
-                                setData(
-                                    "luggage_count",
-                                    parseInt(e.target.value) || 0,
-                                )
-                            }
-                            className="pl-11 block w-full border-slate-200"
-                        />
+                    <div className="flex flex-col gap-3 bg-slate-50 border border-slate-200 p-3 rounded-xl">
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm text-slate-600 font-medium">Grand (23kg max)</span>
+                            <StepperInput
+                                value={data.large_luggage_count}
+                                onChange={(v) => setData("large_luggage_count", v)}
+                                min={0}
+                                max={5}
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm text-slate-600 font-medium">Petit</span>
+                            <StepperInput
+                                value={data.small_luggage_count}
+                                onChange={(v) => setData("small_luggage_count", v)}
+                                min={0}
+                                max={4}
+                            />
+                        </div>
                     </div>
                     <InputError
                         message={errors.luggage_count}
