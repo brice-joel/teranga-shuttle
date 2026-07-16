@@ -1,0 +1,114 @@
+
+
+public function store(Request $request)
+
+    {
+
+        //dd($request->all());
+
+        $validated = $request->validate([
+
+            'trip_id' => 'nullable|exists:trips,id',
+
+            'type' => 'required|in:course_fixed,event_hourly',
+
+            'start_time' => 'required|date|after:now',
+
+            'adults_count' => 'required|integer|min:1',
+
+            'luggage_count' => 'integer|min:0',
+
+            'notes' => 'nullable|string',
+
+            'pickup_address' => 'required_if:type,event_hourly|string',
+
+            // 'duration_hours' => 'required_if:type,event_hourly|integer',
+
+        ]);
+
+        // dd($request->all());
+
+        $startTime = Carbon::parse($request->start_time);
+
+        $totalAmount = 0;
+
+        $endTime = null;
+
+        $pickup = "";
+
+        $dropoff = "";
+
+
+
+        if ($request->type === 'course_fixed') {
+
+            $trip = Trip::find($request->trip_id);
+
+            $totalAmount = $trip->fixed_price;
+
+            $endTime = $startTime->copy()->addMinutes($trip->estimated_duration_minutes);
+
+            $pickup = $trip->departure_city;
+
+            $dropoff = $trip->arrival_city;
+
+        } else {
+
+            // Logique pour événement (Mise à disposition)
+
+            $hourlyRate = 15000; // À récupérer depuis PricingRule plus tard
+
+            $totalAmount = $request->duration_hours * $hourlyRate;
+
+            $endTime = $startTime->copy()->addHours($request->duration_hours);
+
+            $pickup = $request->pickup_address;
+
+        }
+
+
+        $booking = Booking::create([
+
+            'user_id' => Auth::user()->id, // On assume que l'user est connecté
+
+            'trip_id' => $request->trip_id,
+
+            'type' => $request->type,
+
+            'status' => 'pending',
+
+            'start_time' => $startTime,
+
+            'end_time' => $endTime,
+
+            'pickup_address' => $pickup,
+
+            'dropoff_address' => $dropoff,
+
+            'adults_count' => $request->adults_count,
+
+            'luggage_count' => $request->luggage_count,
+
+            'total_amount' => $totalAmount,
+
+            'notes' => $request->notes,
+
+        ]);
+
+
+        // Redirection vers la page de paiement ou de confirmation
+
+        //return redirect()->route('payment.checkout', ['booking' => $booking->id]);
+
+
+        return back()->with('success', 'La réservation à été passé avec success. Vous etes en attente de validation. Nous vous contacterons dans quelques instants');
+
+    }
+
+voici le workflow de réservation: 
+le client enregistre une reservation(un mail est envoyé au chauffeur à l'adresse chauffeur@terangashuttle.com, avec les information de la reservation. ce chauffeur doit se connecter au dashboard https://terangashuttle.com/admin), il est rediriger vers une page de confirmation de reservation (avec le message qu'il doit patienter que le chauffeur valide et puis il passe au paiement ou bien que lequipe technique lui contacte dans quelques minutes). 
+
+j'aimerai voici dabord ce que tu vas faire: Ce controlleur envoie un mail donc a l'adresse chauffeur@terangashuttle.com avec les informations de la reservations et de lutilisateur et le lien de connexion au dashboard. 
+puis redirige vers une route qui va afficher bel et bien que la reservation est passé et que lequipe technique examine et contactera dans quelques minutes ou bien que lutilisateur patiente avant de passer au paiement
+
+NB: cest quand on ferra le dashboard quon yra integrer la possibilité de valider la reservation pour que lutilisateur puisse passer au paiement. on le ferra plustard
