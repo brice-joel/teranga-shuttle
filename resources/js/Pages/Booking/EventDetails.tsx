@@ -64,7 +64,9 @@ export default function EventDetails({
         transform((data) => ({
             ...data,
             luggage_count: data.large_luggage_count + data.small_luggage_count,
-            notes: data.notes + `\n\n[Bagages : ${data.large_luggage_count} grandes (23kg), ${data.small_luggage_count} petites]`,
+            notes:
+                data.notes +
+                `\n\n[Bagages : ${data.large_luggage_count} grandes (23kg), ${data.small_luggage_count} petites]`,
         }));
         post(route("bookings.store"));
     };
@@ -182,7 +184,9 @@ export default function EventDetails({
                                     <div className="flex-1 flex items-center mt-1">
                                         <StepperInput
                                             value={data.adults_count}
-                                            onChange={(v) => setData("adults_count", v)}
+                                            onChange={(v) =>
+                                                setData("adults_count", v)
+                                            }
                                             min={1}
                                             max={7}
                                         />
@@ -195,19 +199,33 @@ export default function EventDetails({
                                     </label>
                                     <div className="flex flex-col gap-3">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-xs text-slate-600 font-medium">Grand (23kg max)</span>
+                                            <span className="text-xs text-slate-600 font-medium">
+                                                Grand (23kg max)
+                                            </span>
                                             <StepperInput
                                                 value={data.large_luggage_count}
-                                                onChange={(v) => setData("large_luggage_count", v)}
+                                                onChange={(v) =>
+                                                    setData(
+                                                        "large_luggage_count",
+                                                        v,
+                                                    )
+                                                }
                                                 min={0}
                                                 max={5}
                                             />
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-xs text-slate-600 font-medium">Petit</span>
+                                            <span className="text-xs text-slate-600 font-medium">
+                                                Petit
+                                            </span>
                                             <StepperInput
                                                 value={data.small_luggage_count}
-                                                onChange={(v) => setData("small_luggage_count", v)}
+                                                onChange={(v) =>
+                                                    setData(
+                                                        "small_luggage_count",
+                                                        v,
+                                                    )
+                                                }
                                                 min={0}
                                                 max={4}
                                             />
@@ -295,11 +313,17 @@ export default function EventDetails({
                                         </span>
                                         <div className="flex flex-col items-end">
                                             <span className="font-bold text-slate-100">
-                                                {data.large_luggage_count + data.small_luggage_count}
+                                                {data.large_luggage_count +
+                                                    data.small_luggage_count}
                                             </span>
-                                            {(data.large_luggage_count > 0 || data.small_luggage_count > 0) && (
+                                            {(data.large_luggage_count > 0 ||
+                                                data.small_luggage_count >
+                                                    0) && (
                                                 <span className="text-[9px] text-slate-400 mt-0.5 text-right">
-                                                    {data.large_luggage_count} grand(s), {data.small_luggage_count} petit(s)
+                                                    {data.large_luggage_count}{" "}
+                                                    grand(s),{" "}
+                                                    {data.small_luggage_count}{" "}
+                                                    petit(s)
                                                 </span>
                                             )}
                                         </div>
